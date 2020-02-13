@@ -65,6 +65,7 @@ class ChatBot extends Component {
       cache,
       cacheName,
       customDelay,
+      disableInputFocus,
       enableMobileAutoFocus,
       userAvatar,
       userDelay
@@ -134,7 +135,7 @@ class ChatBot extends Component {
       () => {
         // focus input if last step cached is a user step
         this.setState({ disabled: false }, () => {
-          if (enableMobileAutoFocus || !isMobile()) {
+          if (enableMobileAutoFocus || (!isMobile() && !disableInputFocus)) {
             if (this.input) {
               this.input.focus();
             }
@@ -239,7 +240,7 @@ class ChatBot extends Component {
   };
 
   triggerNextStep = data => {
-    const { enableMobileAutoFocus } = this.props;
+    const { disableInputFocus, enableMobileAutoFocus } = this.props;
     const { defaultUserSettings, previousSteps, renderedSteps, steps } = this.state;
 
     let { currentStep, previousStep } = this.state;
@@ -313,7 +314,7 @@ class ChatBot extends Component {
       this.setState({ renderedSteps, currentStep, previousStep }, () => {
         if (nextStep.user) {
           this.setState({ disabled: false }, () => {
-            if (enableMobileAutoFocus || !isMobile()) {
+            if (enableMobileAutoFocus || (!isMobile() && !disableInputFocus)) {
               if (this.input) {
                 this.input.focus();
               }
@@ -476,7 +477,7 @@ class ChatBot extends Component {
   };
 
   checkInvalidInput = () => {
-    const { enableMobileAutoFocus } = this.props;
+    const { disableInputFocus, enableMobileAutoFocus } = this.props;
     const { currentStep, inputValue } = this.state;
     const result = currentStep.validator(inputValue);
     const value = inputValue;
@@ -497,7 +498,7 @@ class ChatBot extends Component {
                 disabled: false
               },
               () => {
-                if (enableMobileAutoFocus || !isMobile()) {
+                if (enableMobileAutoFocus || (!isMobile() && !disableInputFocus)) {
                   if (this.input) {
                     this.input.focus();
                   }
@@ -734,6 +735,7 @@ ChatBot.propTypes = {
   customDelay: PropTypes.number,
   customStyle: PropTypes.objectOf(PropTypes.any),
   controlStyle: PropTypes.objectOf(PropTypes.any),
+  disableInputFocus: PropTypes.bool,
   enableMobileAutoFocus: PropTypes.bool,
   enableSmoothScroll: PropTypes.bool,
   extraControl: PropTypes.objectOf(PropTypes.element),
@@ -785,6 +787,7 @@ ChatBot.defaultProps = {
   customStyle: {},
   controlStyle: { position: 'absolute', right: '0', top: '0' },
   customDelay: 1000,
+  disableInputFocus: false,
   enableMobileAutoFocus: false,
   enableSmoothScroll: false,
   extraControl: undefined,
